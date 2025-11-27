@@ -139,22 +139,28 @@ build_all_targets() {
 
 prepare_headers() {
     local headers_dir="$1"
-    
+
     log_info "Preparing headers in ${headers_dir}..."
-    
+
     # Create headers directory
     mkdir -p "${headers_dir}/wasmi"
-    
+
     # Copy main headers
     cp "${INCLUDE_DIR}/wasm.h" "${headers_dir}/"
     cp "${INCLUDE_DIR}/wasmi.h" "${headers_dir}/"
-    
+
     # Copy wasmi subdirectory headers
     cp "${INCLUDE_DIR}/wasmi/config.h" "${headers_dir}/wasmi/"
     cp "${INCLUDE_DIR}/wasmi/engine.h" "${headers_dir}/wasmi/"
     cp "${INCLUDE_DIR}/wasmi/error.h" "${headers_dir}/wasmi/"
     cp "${INCLUDE_DIR}/wasmi/store.h" "${headers_dir}/wasmi/"
-    
+
+    # Copy modulemap for Swift compatibility
+    if [[ -f "${INCLUDE_DIR}/module.modulemap" ]]; then
+        cp "${INCLUDE_DIR}/module.modulemap" "${headers_dir}/"
+        log_info "Copied modulemap for Swift compatibility"
+    fi
+
     # Generate conf.h from template
     cat > "${headers_dir}/wasmi/conf.h" << 'EOF'
 /**
@@ -171,7 +177,7 @@ prepare_headers() {
 
 #endif // WASMI_CONF_H
 EOF
-    
+
     log_success "Headers prepared."
 }
 
@@ -240,7 +246,8 @@ print_summary() {
     echo "To use in Xcode:"
     echo "  1. Drag the .xcframework into your Xcode project"
     echo "  2. Add to 'Frameworks, Libraries, and Embedded Content'"
-    echo "  3. Import headers: #include <wasm.h> or #include <wasmi.h>"
+    echo "  3. For Objective-C: #include <wasm.h> or #include <wasmi.h>"
+    echo "  4. For Swift: import Wasmi"
     echo ""
     echo "============================================================================="
 }

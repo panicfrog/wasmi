@@ -1,0 +1,13 @@
+module Wasmi {
+    header "wasm.h"
+    header "wasmi.h"
+    header "wasmi/config.h"
+    header "wasmi/engine.h"
+    header "wasmi/error.h"
+    header "wasmi/store.h"
+    header "wasmi/conf.h"
+
+    export *
+
+    link "wasmi"
+}
